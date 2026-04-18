@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
-project(cucumber C)
+project(C cucumber)
 
-# Enforce C11, we use stdbool, stdint, and _Generic
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)      # no GNU extensions, keep it portable
@@ -12,6 +11,8 @@ add_compile_options(
     -Wextra
     -Werror
     -Wpedantic
+    -Wvla              # ban variable length arrays
+    -Wstack-usage=256
 )
 
 # Build types
@@ -31,8 +32,8 @@ add_library(cucumber_internal STATIC
 )
 
 target_include_directories(cucumber_internal
-    PUBLIC  include/           # cucumber.h — public API
-    PRIVATE internal/          # util.h — internal only
+    PUBLIC  include/           # cucumber.h -> public API
+    PRIVATE internal/          # util.h —> internal only
 )
 
 # Enable testing
