@@ -79,14 +79,20 @@ void step_free(Step *step);
 
 **Consequence**: Callers must size max_len as at least `strlen(src) + 1`. The function never modifies input.
 
-## ADR-008 — sec_mul_safe Specification
+## ADR-008 — `sec_mul_safe` Specification
 **Status:** Accepted </br>
 **Date:** 2026-04-18 </br>
 
 **Decision**: Rejects negative inputs. Stores result only on success. Leaves `*out` unchanged on failure.
+
 **Reasoning**: sec_mul_safe exists specifically to compute allocation sizes: `rows * cols * sizeof(char*)`. Negative dimensions are either a bug or malicious input, both of which should be rejected. Leaving *out unchanged on failure prevents callers from using a corrupted value if they forget to check the return.
 
 **Signed overflow note**: Signed integer overflow is undefined behavior in C. The pre-check pattern `(a > INT32_MAX / b)` is used instead of post-multiplication detection because the compiler may optimize away any check that assumes overflow has already occurred.
+
+**Consequences:** 
+- NULL check must be the unconditional first guard — no side 
+  effects before all inputs are validated (SEI CERT C: EXP34-C)
+- Test cases must combine boundary values across parameters
 
 ## ADR-009 — sec_zero Optimizer Guarantee
 **Status:** Accepted </br>
@@ -142,5 +148,17 @@ Tier 3 — every release: objdump assembly inspection for sec_zero
 - Call site pass an upper limit and not a pre-measured length, simpler call sites in the parser
 - Lexer must reject embeded nulls before `sec_strdup` is called
 - If the lexer has a bug that allows embedded nulls through, `sec_strdup` will not catch them
+
+## ADR-013 — `sec_mull_safe` Updated tests cases
+**Status:** Accepted </br>
+**Date:** 2026-04-19 </br>
+**Related:** ADR-008
+
+**Context**: During implementation, is was discovered that the test cases does not cover all possible combinations of inputs, which leads to the combinations of `a` and `b` being zero while `result` is null being untested. This resulted in a segmentation fault since the implementation does not verify whether `result` is null before dereferencing it.  
+
+**Decision**: Added additional test cases to cover more input combinations involving result being null. Fixed implementation to pass all test cases. Added Consequence section in ADR-008 to document implications.
+
+**Reasoning**: This was a mistake in producing test cases that adhere to specifications and standard testing practices. Future test cases must test all combinations of boundary values across all parameters. 
+
 
 

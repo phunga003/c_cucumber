@@ -142,8 +142,30 @@ void test_sec_mul_safe_negative_b(void) {
     TEST_ASSERT(out == 5, "out must be unchanged on negative input");
 }
 
+void test_sec_mul_safe_negative_both(void) {
+    int32_t out = 5;
+    bool res = sec_mul_safe(-1, -1, &out);
+    TEST_ASSERT(!res,     "negative inputs should fail");
+    TEST_ASSERT(out == 5, "out must be unchanged on negative input");
+}
+
 void test_sec_mul_safe_null_out(void) {
     bool res = sec_mul_safe(5, 3, NULL);
+    TEST_ASSERT(!res, "NULL out must return false");
+}
+
+void test_sec_mull_valid_zero_null_out_1(void) {
+    bool res = sec_mul_safe(0, 3, NULL);
+    TEST_ASSERT(!res, "NULL out must return false");
+}
+
+void test_sec_mull_valid_zero_null_out_2(void) {
+    bool res = sec_mul_safe(3, 0, NULL);
+    TEST_ASSERT(!res, "NULL out must return false");
+}
+
+void test_sec_mull_valid_zero_null_out_3(void) {
+    bool res = sec_mul_safe(0, 0, NULL);
     TEST_ASSERT(!res, "NULL out must return false");
 }
 
@@ -156,6 +178,10 @@ void run_sec_mul_safe_tests(void) {
     RUN_TEST(test_sec_mul_safe_negative_a);
     RUN_TEST(test_sec_mul_safe_negative_b);
     RUN_TEST(test_sec_mul_safe_null_out);
+    RUN_TEST(test_sec_mull_valid_zero_null_out_1);
+    RUN_TEST(test_sec_mull_valid_zero_null_out_2);
+    RUN_TEST(test_sec_mull_valid_zero_null_out_3);
+    RUN_TEST(test_sec_mul_safe_negative_both);
 }
 
 /*

@@ -13,7 +13,7 @@ static size_t strnlen(const char *src, size_t max_len) {
             break;
         }
     }
-    
+
     return i;
 }
 
@@ -31,8 +31,19 @@ char *sec_strdup(const char *src, size_t max_len) {
 }
 
 bool sec_mul_safe(int32_t a, int32_t b, int32_t *result) {
+    if (a < 0 || b < 0 || result == NULL) return false;
+    
+    if (a == 0 || b == 0) {
+        *result = 0;
+        return true;
+    }
+
+    if (a > INT32_MAX / b) {
+        return false;
+    }
+
     *result = a * b;
-    return false;
+    return true;
 }
 
 void sec_zero(void *ptr, size_t len) {
