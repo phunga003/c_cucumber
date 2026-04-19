@@ -6,13 +6,28 @@ void sec_free_impl(void **ptr) {
     *ptr = NULL;
 }
 
-char *sec_strdup(const char *src, size_t max_len) {
-    if (max_len == 0) {
-        return NULL;
+static size_t strnlen(const char *src, size_t max_len) {
+    size_t i;
+    for (i = 0; i < max_len; i ++) {
+        if (src[i] == '\0') {
+            break;
+        }
     }
-    char *ptr = malloc(max_len * sizeof(char));
-    strcpy(ptr, src);
-    return ptr;
+    
+    return i;
+}
+
+char *sec_strdup(const char *src, size_t max_len) {
+    if (src == NULL || max_len == 0) return NULL;
+
+    size_t len = strnlen(src, max_len);
+    if (len >= max_len) return NULL;
+
+    char *dest = malloc(len + 1);  
+    if (dest == NULL) return NULL;
+
+    memcpy(dest, src, len + 1);     
+    return dest;
 }
 
 bool sec_mul_safe(int32_t a, int32_t b, int32_t *result) {

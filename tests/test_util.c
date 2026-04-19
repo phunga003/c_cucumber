@@ -73,6 +73,11 @@ void test_sec_strdup_is_independent_copy(void) {
     free(dup);
 }
 
+void test_sec_strdup_max_len_is_zero(void) {
+    char *dup = sec_strdup("hello", 0); 
+    TEST_ASSERT(dup == NULL, "max_len of 0 must return NULL");
+}
+
 void run_sec_strdup_tests(void) {
     RUN_TEST(test_sec_strdup_null_src);
     RUN_TEST(test_sec_strdup_empty_string);
@@ -80,6 +85,7 @@ void run_sec_strdup_tests(void) {
     RUN_TEST(test_sec_strdup_len_exceeds_max_len);
     RUN_TEST(test_sec_strdup_valid_copy);
     RUN_TEST(test_sec_strdup_is_independent_copy);
+    RUN_TEST(test_sec_strdup_max_len_is_zero);
 }
 
 void test_sec_mul_safe_both_zero(void) {
