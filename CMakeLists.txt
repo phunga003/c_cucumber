@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(C cucumber)
+project(c-cucumber C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -12,8 +12,9 @@ add_compile_options(
     -Werror
     -Wpedantic
     -Wvla              # ban variable length arrays
-    -Wstack-usage=256
 )
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Build types
 # Usage: cmake -DCMAKE_BUILD_TYPE=Debug|Release|Asan
@@ -32,8 +33,8 @@ add_library(cucumber_internal STATIC
 )
 
 target_include_directories(cucumber_internal
-    PUBLIC  include/           # cucumber.h -> public API
-    PRIVATE internal/          # util.h —> internal only
+    PUBLIC  ${CMAKE_SOURCE_DIR}/include/public
+    PRIVATE ${CMAKE_SOURCE_DIR}/include/internal
 )
 
 # Enable testing

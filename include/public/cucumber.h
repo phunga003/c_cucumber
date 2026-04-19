@@ -1,5 +1,5 @@
-#ifndef CUCUMBER_H
-#define CUCUMBER_H
+#ifndef CUCUMBER_PUBLIC_CUCUMBER_H
+#define CUCUMBER_PUBLIC_CUCUMBER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,4 +49,4 @@ void datatable_free(DataTable *dt);
 }
 #endif
 
-#endif // !CUCUMBER_H
+#endif // CUCUMBER_PUBLIC_CUCUMBER_H

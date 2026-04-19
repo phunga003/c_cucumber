@@ -1,5 +1,5 @@
 #include "test_runner.h"
-#include "internal/util.h"
+#include "util.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -214,10 +214,13 @@ void run_sec_zero_tests(void) {
 
 
 int main(void) {
+    TEST_INIT();
+
     run_sec_free_impl_tests();
     run_sec_strdup_tests();
     run_sec_mul_safe_tests();
-    run_sec_zero_test();
+    run_sec_zero_tests();
 
     TEST_SUMMARY();
 }
+

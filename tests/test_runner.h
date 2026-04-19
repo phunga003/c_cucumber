@@ -13,6 +13,19 @@ extern "C" {
 #include <stdlib.h>
 #include <unistd.h>  /* fork, waitpid */
 #include <sys/wait.h>
+#include <unistd.h>   /* isatty */
+
+static int use_color = 0;
+
+/* Call once at the start of main() */
+#define TEST_INIT() do { \
+    use_color = isatty(STDOUT_FILENO); \
+} while(0)
+
+#define COLOR_RED    (use_color ? "\x1b[31m" : "")
+#define COLOR_GREEN  (use_color ? "\x1b[32m" : "")
+#define COLOR_YELLOW (use_color ? "\x1b[33m" : "")
+#define COLOR_RESET  (use_color ? "\x1b[0m"  : "")
 
 static int tests_passed = 0;
 static int tests_failed = 0;
@@ -27,25 +40,27 @@ static int tests_failed = 0;
     }                                                    \
 } while(0)
 
-#define RUN_TEST(fn) do {                                \
-    printf("[ RUN  ] %s\n", #fn);                       \
-    pid_t pid = fork();                                  \
-    if (pid == 0) { fn(); exit(tests_failed > 0 ? 1 : 0); } \
-    int status;                                          \
-    waitpid(pid, &status, 0);                            \
-    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {\
-        printf("[ PASS ] %s\n", #fn);                   \
-        tests_passed++;                                  \
-    } else {                                             \
-        printf("[ FAIL ] %s\n", #fn);                   \
-        tests_failed++;                                  \
-    }                                                    \
+
+#define RUN_TEST(fn) do {                                               \
+    printf("%s[ RUN  ]%s %s\n", COLOR_YELLOW, COLOR_RESET, #fn);      \
+    pid_t pid = fork();                                                 \
+    if (pid == 0) { fn(); exit(tests_failed > 0 ? 1 : 0); }           \
+    int status;                                                         \
+    waitpid(pid, &status, 0);                                           \
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {               \
+        printf("%s[ PASS ]%s %s\n", COLOR_GREEN, COLOR_RESET, #fn);   \
+        tests_passed++;                                                 \
+    } else {                                                            \
+        printf("%s[ FAIL ]%s %s\n", COLOR_RED, COLOR_RESET, #fn);     \
+        tests_failed++;                                                 \
+    }                                                                   \
 } while(0)
 
-#define TEST_SUMMARY() do {                              \
-    printf("\n%d passed, %d failed\n",                   \
-           tests_passed, tests_failed);                  \
-    return tests_failed > 0 ? 1 : 0;                    \
+#define TEST_SUMMARY() do {                                             \
+    printf("\n%s%d passed%s, %s%d failed%s\n",                         \
+           COLOR_GREEN, tests_passed, COLOR_RESET,                     \
+           COLOR_RED,   tests_failed, COLOR_RESET);                    \
+    return tests_failed > 0 ? 1 : 0;                                   \
 } while(0)
 
 #ifdef __cplusplus

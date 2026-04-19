@@ -3,8 +3,8 @@ add_executable(test_util test_util.c)
 target_link_libraries(test_util PRIVATE cucumber_internal)
 
 target_include_directories(test_util PRIVATE
-    ${CMAKE_SOURCE_DIR}/internal    # util.h
-    ${CMAKE_SOURCE_DIR}/tests       # test_runner.h
+    ${CMAKE_SOURCE_DIR}/include/internal
+    ${CMAKE_SOURCE_DIR}/tests
 )
 
 # Register with CTest
