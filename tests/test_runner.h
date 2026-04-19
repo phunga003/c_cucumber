@@ -42,7 +42,6 @@ static int tests_failed = 0;
 
 
 #define RUN_TEST(fn) do {                                               \
-    printf("%s[ RUN  ]%s %s\n", COLOR_YELLOW, COLOR_RESET, #fn);      \
     pid_t pid = fork();                                                 \
     if (pid == 0) { fn(); exit(tests_failed > 0 ? 1 : 0); }           \
     int status;                                                         \
